@@ -1,0 +1,20 @@
+{
+  "name": "learning_graphql",
+  "version": "1.0.0",
+  "description": "Beginning steps towards learing graphql",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "devStart": "nodemon server.js"
+  },
+  "author": "Ankit Dhawan",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^16.6.0"
+  }
+}
