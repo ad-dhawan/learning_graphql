@@ -10,18 +10,98 @@ GraphQL is a query language and server-side runtime for application programming 
 ---
 
 ### **Why to use Graph QL?**
-Suppose you have an array of objects with posts and you want to obtain only the names of the person who liked the post.
-<p align="center">
-  <img src="./assets/rest.png" alt="Graph QL Cover" width="100%" />
-</p>
-In REST API, you'll need to get all the unwanted data of the post that you might not need in a istuation. Thus, making the server take more load and compromising the response time.
+Suppose you have two tables in your database
+1. Feed
+2. User
+
+>Feed Array
+```json
+"feed": [
+  {
+    "id": 1,
+    "full_name": "Ainslee Giffard",
+    "user_name": "agiffard0",
+    "user_avatar": "https://robohash.org/architectoetveniam.png",
+    "image_url": "http://dummyimage.com/234x245.png",
+    "likes": [{ "id": 107 }, { "id": 20 }, { "id": 79 }, { "id": 159 }],
+  },
+  .
+  .
+  .
+]
+```
+
+>User Array
+```json
+"users": [
+  {
+    "user_id": 1,
+    "full_name": "Ankit Dhawan",
+    "user_name": "adhawan",
+    "user_avatar": "https://robohash.org/sapienteplaceatet.png",
+  },
+  .
+  .
+  .
+]
+```
+
+If you want only the names of the users who liked the post then your REST API will be give you tons of useless data that you might not need. Thus taking more time and more server load.Whereas in Graph QL you can only get data that you require, filtering all the data in the backend.
+
 <br></br>
-Whereas in Graph QL, you can only get the values you require, filtering all the data in the backend. 
-<p align="center">
-  <img src="./assets/graphql.png" alt="Graph QL Cover" width="100%" />
-</p>
+
+#### **How to request data in Graph QL**
+>Query
+```
+query {
+  getFeed {
+    likes {
+      id
+    }
+  }
+}
+```
+
+>Output 👇🏻
+```json
+{
+  "data": {
+    "getFeed": [
+      {
+        "likes": [
+          {"id":107},{"id":20},{"id":79},{"id":159}
+        ]
+      }
+    ]
+  }
+}
+```
+<br></br>
+>Query
+```
+query {
+  getUser(id: 107) {
+    full_name
+    user_name
+  }
+}
+```
+>Output 👇🏻
+```json
+{
+  "data": {
+    "getUser": [
+      {
+        "full_name": "Ankit Dhawan",
+        "useranme": "adhawan"
+      }
+    ]
+  }
+}
+```
 
 ---
+
 ### **Languages supported by Graph QL**
 
 <code> <img height="50" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg"> </code>
