@@ -21,6 +21,8 @@ const {
     GraphQLInt,
     GraphQLNonNull,
 } = require('graphql');
+const { applyMiddleware } = require('graphql-middleware');
+const { shield, rule, and } = require('graphql-shield');
 
 
 /**
@@ -33,7 +35,7 @@ const app = express();
  * Importing dummy data
  */
 const {feed} = require('./dummy-data/feed');
-const {users} = require('./dummy-data/users');
+const {users} = require('./dummy-data/users')
 
 
 /**
@@ -74,6 +76,8 @@ const UserType = new GraphQLObjectType({
 
 /**
  * Declaring Query Type
+ * 
+ * -- Query Type is a special object type that defines the entry points for queries that clients execute against your server
  */
 const RootQueryType = new GraphQLObjectType({
     name: 'Query',
@@ -114,6 +118,8 @@ const RootQueryType = new GraphQLObjectType({
 
 /**
  * Declaring Mutation Type
+ * 
+ * -- Mutation is a operation that allows you to insert new data or modify existing data on the server side
  */
 const RootMutationType = new GraphQLObjectType({
     name: 'Mutation',
@@ -166,6 +172,8 @@ const RootMutationType = new GraphQLObjectType({
 
 /**
  * Declaring Schema
+ * 
+ * -- Graph QL uses schema to describe the shape of your available data
  */
 const schema = new GraphQLSchema({
     query: RootQueryType,
@@ -174,12 +182,44 @@ const schema = new GraphQLSchema({
 
 
 /**
- * Middleware
+ * Permissions for authorization
  */
-app.use('/graphql', expressGraphQL({
-    schema: schema,
-    graphiql: true
-}))
+const isAuthenticated = rule()(async (parent, args, ctx, info) => {
+    return !!ctx.headers["user-token"];
+});
+
+const isAdmin = rule()(async (parent, args, ctx, info) => {
+    const user = users.find(user => user.user_token === ctx.headers["user-token"]);
+    return user && user.is_admin === true
+});
+
+
+/**
+ * Middleware
+ * 
+ * -- Graph QL shield is a middleware library for graph ql which provides a permission layer for application thus making the application secure
+ */
+const permission = shield({
+    Query: {
+        getFeed: isAuthenticated,
+        getPost: isAuthenticated,
+        getUsers: isAuthenticated,
+        getUser: isAuthenticated
+    },
+    Mutation: {
+        addPost: and(isAdmin, isAuthenticated),
+        addUser: and(isAuthenticated, isAdmin)
+    }
+});
+
+const schemaWithPermission = applyMiddleware(schema, permission);
+
+app.use('/graphql', expressGraphQL((request) => ({
+    schema: schemaWithPermission,
+    graphiql: {
+        headerEditorEnabled: true
+    }
+})))
 
 
 /**

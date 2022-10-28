@@ -5,7 +5,9 @@
 # Getting Started with Learning Graph QL
 
 ### **What is Graph QL?**
+<sup>
 GraphQL is a query language and server-side runtime for application programming interfaces (APIs) that prioritizes giving clients exactly the data they request and no more. 
+</sup>
 
 ---
 
@@ -46,7 +48,9 @@ Suppose you have two tables in your database
 ]
 ```
 
+<sup>
 If you want only the names of the users who liked the post then your REST API will be give you tons of useless data that you might not need. Thus taking more time and more server load.Whereas in Graph QL you can only get data that you require, filtering all the data in the backend.
+</sup>
 
 <br></br>
 
@@ -102,6 +106,22 @@ query {
 
 ---
 
+### **How I secured my Graph QL API**
+### **Graph QL Shield**
+<sup>
+GraphQL Shield provides a straightforward approach to writing permissions in GraphQL servers. Its primary focus is abstracting permission layer efficiently from the logic layer of our server. Nevertheless, its raw power comes with dynamic caching which significantly reduces server load and accounts for faster query evaluation.
+</sup>
+
+---
+
+### **How to run the project**
+<sup></sup>
+If you have installed and configured nodemon then you can `nodemon server.js`.
+You can change the npm start command from `/package.json` file
+</sup>
+
+---
+
 ### **Languages supported by Graph QL**
 
 <code> <img height="50" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg"> </code>
@@ -136,6 +156,8 @@ query {
 - express
 - graphql
 - nodemon (optional)
+- graphql-shield
+- graphql-middleware
 
 ---
 
