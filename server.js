@@ -1,9 +1,12 @@
 /*
 --------------------------------------------------------------------------------
-Beginning steps towards learning GraphQL using node Express and NodeJS
+Beginning steps towards learning GraphQL using Express and NodeJS
 
--Author
+Author
 -- Ankit Dhawan
+
+GitHub Repository
+- https://github.com/ad-dhawan/learning_graphql
 --------------------------------------------------------------------------------
 -*/
 
@@ -20,6 +23,7 @@ const {
     GraphQLList,
     GraphQLInt,
     GraphQLNonNull,
+    GraphQLBoolean,
 } = require('graphql');
 const { applyMiddleware } = require('graphql-middleware');
 const { shield, rule, and } = require('graphql-shield');
@@ -35,11 +39,17 @@ const app = express();
  * Importing dummy data
  */
 const {feed} = require('./dummy-data/feed');
-const {users} = require('./dummy-data/users')
+const {users} = require('./dummy-data/users');
+
+const SERVER_PORT = process.env.PORT || 4412;
 
 
 /**
  * Creating Type Query
+ * 
+ * Types of query type created for this demo
+ * - FeedType
+ * - UserType
  */
 const FeedType = new GraphQLObjectType({
     name: 'Feed',
@@ -59,6 +69,28 @@ const FeedType = new GraphQLObjectType({
                 })
             })
         ) },
+        comments: { type: new GraphQLList(
+            new GraphQLObjectType({
+                name: 'Comments',
+                description: 'Comment of a specific post',
+                fields: () => ({
+                    user_id: { type: GraphQLInt },
+                    user_name: { type: GraphQLString },
+                    comment: { type: GraphQLString },
+                    replies: { type: new GraphQLList(
+                        new GraphQLObjectType({
+                            name: 'Replies',
+                            description: 'Replies of a specific comment',
+                            fields: () => ({
+                                user_id: { type: GraphQLInt },
+                                user_name: { type: GraphQLString },
+                                reply: { type: GraphQLString }
+                            })
+                        })
+                    )}
+                })
+            })
+        )}
     })
 })
 
@@ -66,10 +98,26 @@ const UserType = new GraphQLObjectType({
     name: 'User',
     description: 'This represents a user from dummy data',
     fields: () => ({
-        user_id: { type: GraphQLInt },
+        id: { type: GraphQLInt },
         full_name: { type: GraphQLString },
         user_name: { type: GraphQLString },
         user_avatar: { type: GraphQLString },
+        bio: { type: GraphQLString },
+        email: { type: GraphQLString },
+        phone_number: { type: GraphQLString },
+        is_admin: { type: GraphQLBoolean },
+        is_verified: { type: GraphQLBoolean },
+        is_premium_member: { type: GraphQLBoolean },
+        posts: { type: new GraphQLList(
+            new GraphQLObjectType({
+                name: 'Posts',
+                description: 'All posts of a specific user',
+                fields: () => ({
+                    post_id: { type: GraphQLInt },
+                    image_url: { type: GraphQLString }
+                })
+            })
+        )}
     })
 })
 
@@ -108,9 +156,9 @@ const RootQueryType = new GraphQLObjectType({
             type: UserType,
             description: 'Single user from the list',
             args: {
-                user_id: { type: GraphQLInt }
+                id: { type: GraphQLInt }
             },
-            resolve: (parent, args) => users.find(user => user.user_id === args.user_id)
+            resolve: (parent, args) => users.find(user => user.id === args.id)
         }
     })
 })
@@ -225,7 +273,17 @@ app.use('/graphql', expressGraphQL((request) => ({
 /**
  * Running Server
  */
-app.listen(process.env.PORT || 3000, function(){
-    console.log(`🚀 Server is running \n-- Port: ${this.address().port} \n-- Environment: ${app.settings.env} mode`);
+app.listen(SERVER_PORT, (err) => {
+    if(!err){
+        let url;
+        if(app.settings.env === 'development')
+            url = `http://localhost:${SERVER_PORT}`
+
+        console.log(
+            `🚀 Server is running \n-- Port: ${SERVER_PORT} \n-- Environment: ${app.settings.env} mode \n-- URL: ${url}`
+        );
+    } else {
+        console.log(`Error occurred, Server can't start \nError: ${err}`)
+    }
 });
 

@@ -108,17 +108,9 @@ query {
 
 ### **How I secured my Graph QL API**
 ### **Graph QL Shield**
-<sup>
 GraphQL Shield provides a straightforward approach to writing permissions in GraphQL servers. Its primary focus is abstracting permission layer efficiently from the logic layer of our server. Nevertheless, its raw power comes with dynamic caching which significantly reduces server load and accounts for faster query evaluation.
-</sup>
-
----
-
-### **How to run the project**
-<sup></sup>
-If you have installed and configured nodemon then you can `nodemon server.js`.
-You can change the npm start command from `/package.json` file
-</sup>
+<br></br>
+You can read more about **GraphQL Shield** [here](https://www.the-guild.dev/graphql/shield/docs)
 
 ---
 
@@ -150,6 +142,17 @@ You can change the npm start command from `/package.json` file
 <code> <img height="50" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/r/r-original.svg"> </code>
 <code> <img height="50" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/groovy/groovy-original.svg"> </code>
 <code> <img height="50" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/perl/perl-original.svg"> </code>
+
+---
+
+| Command | Description |
+| --- | --- |
+| `git clone` | Clone an existing repo to your device |
+| `npm install` | Install all the required dependencies for project |
+| `npm start` | Run the project |
+| `npm run devStart` | Run the project with nodemon |
+
+---
 
 ### **Dependencies used**
 - express-graphql
