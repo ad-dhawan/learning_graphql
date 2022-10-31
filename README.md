@@ -114,6 +114,14 @@ You can read more about **GraphQL Shield** [here](https://www.the-guild.dev/grap
 
 ---
 
+### **How I secured user data**
+### **Bcrypt**
+bcrypt is a password hashing function which uses a 128-bit salt and encrypts a 192-bit magic value. It takes advantage of the expensive key setup in eksblowfish.
+<br></br>
+You can read more about **Bcrypt** [here](https://github.com/kelektiv/node.bcrypt.js)
+
+---
+
 ### **Languages supported by Graph QL**
 
 <code> <img height="50" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg"> </code>
@@ -161,6 +169,7 @@ You can read more about **GraphQL Shield** [here](https://www.the-guild.dev/grap
 - nodemon (optional)
 - graphql-shield
 - graphql-middleware
+- bcrypt
 
 ---
 

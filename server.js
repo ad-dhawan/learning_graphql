@@ -27,6 +27,14 @@ const {
 } = require('graphql');
 const { applyMiddleware } = require('graphql-middleware');
 const { shield, rule, and } = require('graphql-shield');
+const bcrypt = require('bcrypt');
+
+// let crypto;
+// try {
+//   crypto = require('node:crypto');
+// } catch (err) {
+//   console.log('crypto support is disabled!');
+// }
 
 
 /**
@@ -41,7 +49,38 @@ const app = express();
 const {feed} = require('./dummy-data/feed');
 const {users} = require('./dummy-data/users');
 
+
+/**
+ * Server constants
+ */
 const SERVER_PORT = process.env.PORT || 4412;
+const SALT_ROUNDS = 11;
+
+
+/**
+ * Method for hashing a plain text
+ * Function name - createHashedPassword
+ * Parameters required - String
+ */
+async function createHashedPassword(plainText) {
+    let encrypted_password;
+
+    await bcrypt.hash(plainText, SALT_ROUNDS).then(function(hash) {
+        encrypted_password = hash;
+    });
+
+    return encrypted_password;
+}
+
+function generateToken(length){
+    var a = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".split("");
+    var b = [];  
+    for (var i=0; i<length; i++) {
+        var j = (Math.random() * (a.length-1)).toFixed(0);
+        b[i] = a[j];
+    }
+    return b.join("");
+}
 
 
 /**
@@ -117,7 +156,7 @@ const UserType = new GraphQLObjectType({
                     image_url: { type: GraphQLString }
                 })
             })
-        )}
+        )},
     })
 })
 
@@ -202,13 +241,27 @@ const RootMutationType = new GraphQLObjectType({
                 full_name: { type: new GraphQLNonNull(GraphQLString) },
                 user_name: { type: new GraphQLNonNull(GraphQLString) },
                 user_avatar: { type: new GraphQLNonNull(GraphQLString) },
+                bio: { type: new GraphQLNonNull(GraphQLString) },
+                phone_number: { type: new GraphQLNonNull(GraphQLString) },
+                email: { type: new GraphQLNonNull(GraphQLString) },
+                password: { type: new GraphQLNonNull(GraphQLString) },
             },
             resolve: (parent, args) => {
+                console.log(createHashedPassword(args.password))
                 const user = {
-                    user_id: users.length + 1,
+                    id: users.length + 1,
                     full_name: args.full_name,
                     user_name: args.user_name,
                     user_avatar: args.user_avatar,
+                    email: args.email,
+                    phone_number: args.phone_number,
+                    bio: args.bio,
+                    is_admin: false,
+                    is_verified: false,
+                    is_premium_member: false,
+                    posts: [],
+                    password: createHashedPassword(args.password),
+                    user_token: generateToken(32)
                 }
                 users.push(user)
             return user
@@ -277,7 +330,7 @@ app.listen(SERVER_PORT, (err) => {
     if(!err){
         let url;
         if(app.settings.env === 'development')
-            url = `http://localhost:${SERVER_PORT}`
+            url = `http://localhost:${SERVER_PORT}/graphql`
 
         console.log(
             `🚀 Server is running \n-- Port: ${SERVER_PORT} \n-- Environment: ${app.settings.env} mode \n-- URL: ${url}`

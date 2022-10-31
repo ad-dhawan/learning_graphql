@@ -1,6 +1,6 @@
 /**
  * Dummy JSON data for feed posts
- * This data is randomly generated using mockaroo.com
+ * This random data is generated using https://www.mockaroo.com/
  * 
  * Data Structure
  * feed: JSON Array
